@@ -3,6 +3,14 @@
  * http://mapbbcode.org/leaflet.html
  */
 
+function createToolbarItem(template, container, itemOptions) {
+    const classes = `${template.classes} ${itemOptions.classes}`;
+    const item = L.DomUtil.create(template.tag, classes, container);
+    item.title = itemOptions.title;
+
+    return item;
+}
+
 L.FunctionButtons = L.Control.extend({
     includes: L.Mixin.Events,
 
@@ -12,6 +20,8 @@ L.FunctionButtons = L.Control.extend({
         this._buttons = buttons;
         if (!options && buttons.length > 0 && 'position' in buttons[0])
             options = { position: buttons[0].position };
+
+        this._options = options;
         L.Control.prototype.initialize.call(this, options);
     },
 
@@ -22,7 +32,8 @@ L.FunctionButtons = L.Control.extend({
         var container = L.DomUtil.create('div', 'controls-panel-wrap', document.getElementsByClassName('leaflet-left')[0]);
         for (var i = 0; i < this._buttons.length; i++) {
             var button = this._buttons[i],
-                link = L.DomUtil.create('a', '', container);
+                link = createToolbarItem(this._options.template, container, button);
+
             link._buttonIndex = i; // todo: remove?
             link.href = button.href || '#';
             if (button.href) {
@@ -41,7 +52,7 @@ L.FunctionButtons = L.Control.extend({
             }
 
             button.link = link;
-            this._updateContent(i);
+            // this._updateContent(i);
 
             var stop = L.DomEvent.stopPropagation;
             L.DomEvent
