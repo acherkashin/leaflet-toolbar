@@ -26,7 +26,8 @@ const btns = L.functionButtons([{
         template: {
             tag: 'button',
             classes: 'btn btn-default tool-bar-item'
-        }
+        },
+        orientation: 'column' //column or row
     });
 
 btns.on('clicked', (data) => {

@@ -2,14 +2,26 @@
  * A leaflet button with icon or text and click listener.
  * http://mapbbcode.org/leaflet.html
  */
+function setOrientation(domItem, orientation) {
+    if (orientation === 'row') {
+        domItem.style.display = 'inline-block';
+    } else if (orientation === 'column') {
+        domItem.style.display = 'block';
+    } else {
+        console.warn(`you need specify display for item element toolbar`);
+    }
+}
 
-function createToolbarItem(template, container, itemOptions) {
-    const classes = `${template.classes} ${itemOptions.classes}`;
-    const item = L.DomUtil.create(template.tag, classes, container);
+function createToolbarItem(baseOptions, itemOptions, container) {
+    const classes = `${baseOptions.template.classes} ${itemOptions.classes}`;
+    const item = L.DomUtil.create(baseOptions.template.tag, classes, container);
     item.title = itemOptions.title;
+
+    setOrientation(item, baseOptions.orientation);
 
     return item;
 }
+
 
 L.FunctionButtons = L.Control.extend({
     includes: L.Mixin.Events,
@@ -31,7 +43,7 @@ L.FunctionButtons = L.Control.extend({
         var container = L.DomUtil.create('div', 'controls-panel-wrap');
         for (var i = 0; i < this._buttons.length; i++) {
             var button = this._buttons[i],
-                domItem = createToolbarItem(this._options.template, container, button);
+                domItem = createToolbarItem(this._options, button, container);
 
             domItem._buttonIndex = i; // todo: remove?
             domItem.href = button.href || '#';
