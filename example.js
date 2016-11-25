@@ -27,7 +27,13 @@ const btns = L.functionButtons([{
             tag: 'button',
             classes: 'btn btn-default tool-bar-item'
         },
-        orientation: 'column' //column or row
+        orientation: 'column', //column or row
+        toolbarTemplate: {
+            classes: 'leaflet-toolbar'
+        }
+        // panelTemplate: {
+        //     backgroundColor: 'white'
+        // }
     });
 
 btns.on('clicked', (data) => {

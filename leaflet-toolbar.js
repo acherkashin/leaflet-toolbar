@@ -16,6 +16,7 @@ function createToolbarItem(baseOptions, itemOptions, container) {
     const classes = `${baseOptions.template.classes} ${itemOptions.classes}`;
     const item = L.DomUtil.create(baseOptions.template.tag, classes, container);
     item.title = itemOptions.title;
+    item.style.margin = '0 auto';
 
     setOrientation(item, baseOptions.orientation);
 
@@ -40,7 +41,7 @@ L.FunctionButtons = L.Control.extend({
     onAdd: function (map) {
         this._map = map;
 
-        var container = L.DomUtil.create('div', 'controls-panel-wrap');
+        var container = L.DomUtil.create('div', this._options.toolbarTemplate.classes);
         for (var i = 0; i < this._buttons.length; i++) {
             var button = this._buttons[i],
                 domItem = createToolbarItem(this._options, button, container);
