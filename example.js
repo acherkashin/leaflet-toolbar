@@ -25,7 +25,7 @@ const btns = L.functionButtons([{
         position: 'topleft',
         template: {
             tag: 'button',
-            classes: 'btn btn-default'
+            classes: 'btn btn-default tool-bar-item'
         }
     });
 
