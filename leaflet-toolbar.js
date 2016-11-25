@@ -27,43 +27,42 @@ L.FunctionButtons = L.Control.extend({
 
     onAdd: function (map) {
         this._map = map;
-        this._links = [];
 
-        var container = L.DomUtil.create('div', 'controls-panel-wrap', document.getElementsByClassName('leaflet-left')[0]);
+        var container = L.DomUtil.create('div', 'controls-panel-wrap');
         for (var i = 0; i < this._buttons.length; i++) {
             var button = this._buttons[i],
-                link = createToolbarItem(this._options.template, container, button);
+                domItem = createToolbarItem(this._options.template, container, button);
 
-            link._buttonIndex = i; // todo: remove?
-            link.href = button.href || '#';
+            domItem._buttonIndex = i; // todo: remove?
+            domItem.href = button.href || '#';
             if (button.href) {
-                link.target = 'funcbtn';
+                domItem.target = 'funcbtn';
             }
 
-            link.style.padding = '0 4px';
-            link.style.width = 'auto';
-            link.style.minWidth = '20px';
+            domItem.style.padding = '0 4px';
+            domItem.style.width = 'auto';
+            domItem.style.minWidth = '20px';
             if (button.bgColor) {
-                link.style.backgroundColor = button.bgColor;
+                domItem.style.backgroundColor = button.bgColor;
             }
 
             if (button.title) {
-                link.title = button.title;
+                domItem.title = button.title;
             }
 
-            button.link = link;
+            button.domItem = domItem;
             // this._updateContent(i);
 
             var stop = L.DomEvent.stopPropagation;
             L.DomEvent
-                .on(link, 'click', stop)
-                .on(link, 'mousedown', stop)
-                .on(link, 'dblclick', stop);
+                .on(domItem, 'click', stop)
+                .on(domItem, 'mousedown', stop)
+                .on(domItem, 'dblclick', stop);
 
             if (!button.href) {
                 L.DomEvent
-                    .on(link, 'click', L.DomEvent.preventDefault)
-                    .on(link, 'click', this.clicked, this);
+                    .on(domItem, 'click', L.DomEvent.preventDefault)
+                    .on(domItem, 'click', this.clicked, this);
             }
         }
 
@@ -74,28 +73,28 @@ L.FunctionButtons = L.Control.extend({
         if (n >= this._buttons.length)
             return;
         var button = this._buttons[n],
-            link = button.link,
+            domItem = button.domItem,
             content = button.content;
-        if (!link)
+        if (!domItem)
             return;
         if (content === undefined || content === false || content === null || content === '')
-            link.innerHTML = button.alt || '&nbsp;';
+            domItem.innerHTML = button.alt || '&nbsp;';
         else if (typeof content === 'string') {
             var ext = content.length < 4 ? '' : content.substring(content.length - 4),
                 isData = content.substring(0, 11) === 'data:image/';
             if (ext === '.png' || ext === '.gif' || ext === '.jpg' || isData) {
-                link.style.width = '' + (button.imageSize || 26) + 'px';
-                link.style.height = '' + (button.imageSize || 26) + 'px';
-                link.style.padding = '0';
-                link.style.backgroundImage = 'url(' + content + ')';
-                link.style.backgroundRepeat = 'no-repeat';
-                link.style.backgroundPosition = button.bgPos ? (-button.bgPos[0]) + 'px ' + (-button.bgPos[1]) + 'px' : '0px 0px';
+                domItem.style.width = '' + (button.imageSize || 26) + 'px';
+                domItem.style.height = '' + (button.imageSize || 26) + 'px';
+                domItem.style.padding = '0';
+                domItem.style.backgroundImage = 'url(' + content + ')';
+                domItem.style.backgroundRepeat = 'no-repeat';
+                domItem.style.backgroundPosition = button.bgPos ? (-button.bgPos[0]) + 'px ' + (-button.bgPos[1]) + 'px' : '0px 0px';
             } else
-                link.innerHTML = content;
+                domItem.innerHTML = content;
         } else {
-            while (link.firstChild)
-                link.removeChild(link.firstChild);
-            link.appendChild(content);
+            while (domItem.firstChild)
+                domItem.removeChild(domItem.firstChild);
+            domItem.appendChild(content);
         }
     },
 
@@ -118,8 +117,8 @@ L.FunctionButtons = L.Control.extend({
         if (n < this._buttons.length) {
             var button = this._buttons[n];
             button.title = title;
-            if (button.link)
-                button.link.title = title;
+            if (button.domItem)
+                button.domItem.title = title;
         }
     },
 
@@ -131,8 +130,8 @@ L.FunctionButtons = L.Control.extend({
         if (n < this._buttons.length) {
             var button = this._buttons[n];
             button.bgPos = bgPos;
-            if (button.link)
-                button.link.style.backgroundPosition = bgPos ? (-bgPos[0]) + 'px ' + (-bgPos[1]) + 'px' : '0px 0px';
+            if (button.domItem)
+                button.domItem.style.backgroundPosition = bgPos ? (-bgPos[0]) + 'px ' + (-bgPos[1]) + 'px' : '0px 0px';
         }
     },
 
@@ -144,21 +143,21 @@ L.FunctionButtons = L.Control.extend({
         if (n < this._buttons.length) {
             var button = this._buttons[n];
             button.href = href;
-            if (button.link)
-                button.link.href = href;
+            if (button.domItem)
+                button.domItem.href = href;
         }
     },
 
     clicked: function (e) {
-        var link = (window.event && window.event.srcElement) || e.target || e.srcElement;
-        while (link && 'tagName' in link && link.tagName !== 'A' && !('_buttonIndex' in link))
-            link = link.parentNode;
-        if ('_buttonIndex' in link) {
-            var button = this._buttons[link._buttonIndex];
+        var domItem = (window.event && window.event.srcElement) || e.target || e.srcElement;
+        while (domItem && 'tagName' in domItem && domItem.tagName !== 'A' && !('_buttonIndex' in domItem))
+            domItem = domItem.parentNode;
+        if ('_buttonIndex' in domItem) {
+            var button = this._buttons[domItem._buttonIndex];
             if (button) {
                 if ('callback' in button)
                     button.callback.call(button.context);
-                this.fire('clicked', { idx: link._buttonIndex });
+                this.fire('clicked', { idx: domItem._buttonIndex });
             }
         }
     }
