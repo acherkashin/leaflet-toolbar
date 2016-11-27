@@ -1,0 +1,19 @@
+#mapid {
+    height: 100vh;
+}
+
+.tool-bar-item {
+    background: #fff;
+    border-radius: 0px !important;
+    width: 36px !important;
+    height: 36px !important;
+}
+
+.leaflet-toolbar {
+    background-color: white;
+    width: 44px;
+    padding: 5px 0px;
+    color: #303030;
+    margin: 0 !important;
+    height: 700vh;
+}
