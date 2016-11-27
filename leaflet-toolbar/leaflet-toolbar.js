@@ -24,42 +24,52 @@ L.FunctionButtons = L.Control.extend({
     includes: L.Mixin.Events,
 
     initialize: function (buttons, options) {
-        if (!('push' in buttons && 'splice' in buttons))
+        if (!(buttons.push && buttons.splice)) {
             buttons = [buttons];
-        this._buttons = buttons;
-        if (!options && buttons.length > 0 && 'position' in buttons[0])
-            options = { position: buttons[0].position };
+        }
 
+        if (!options.position) {
+            options.position = 'topleft';
+        }
+
+        this._groupsButton = buttons;
         this._options = options;
+
         L.Control.prototype.initialize.call(this, options);
     },
 
     onAdd: function (map) {
         this._map = map;
 
-        var container = L.DomUtil.create('div', this._options.toolbarTemplate.classes);
-        for (var i = 0; i < this._buttons.length; i++) {
-            var button = this._buttons[i],
-                domItem = createToolbarItem(this._options, button, container);
+        const container = L.DomUtil.create('div', this._options.toolbarTemplate.classes);
 
-            domItem._buttonIndex = i; // todo: remove?
+        for (let i = 0; i < this._groupsButton.length; i++) {
+            const buttons = this._groupsButton[i];
+            const groupContainer = L.DomUtil.create('div', this._options.groupTemplate.classes, container);
+            for (let j = 0; j < buttons.length; j++) {
+                let button = buttons[j];
+                let domItem = createToolbarItem(this._options, button, groupContainer);
 
-            if (button.title) {
-                domItem.title = button.title;
-            }
+                domItem._groupsButtonIndex = i;
+                domItem._buttonIndex = j; // todo: remove?
 
-            button.domItem = domItem;
+                if (button.title) {
+                    domItem.title = button.title;
+                }
 
-            var stop = L.DomEvent.stopPropagation;
-            L.DomEvent
-                .on(domItem, 'click', stop)
-                .on(domItem, 'mousedown', stop)
-                .on(domItem, 'dblclick', stop);
+                button.domItem = domItem;
 
-            if (!button.href) {
+                var stop = L.DomEvent.stopPropagation;
                 L.DomEvent
-                    .on(domItem, 'click', L.DomEvent.preventDefault)
-                    .on(domItem, 'click', this.clicked, this);
+                    .on(domItem, 'click', stop)
+                    .on(domItem, 'mousedown', stop)
+                    .on(domItem, 'dblclick', stop);
+
+                if (!button.href) {
+                    L.DomEvent
+                        .on(domItem, 'click', L.DomEvent.preventDefault)
+                        .on(domItem, 'click', this.clicked, this);
+                }
             }
         }
 
@@ -68,13 +78,18 @@ L.FunctionButtons = L.Control.extend({
 
     clicked: function (e) {
         var domItem = (window.event && window.event.srcElement) || e.target || e.srcElement;
-        while (domItem && 'tagName' in domItem && domItem.tagName !== 'A' && !('_buttonIndex' in domItem))
+
+        while (!('_buttonIndex' in domItem && '_groupsButtonIndex' in domItem)) {
             domItem = domItem.parentNode;
+        }
+
         if ('_buttonIndex' in domItem) {
-            var button = this._buttons[domItem._buttonIndex];
+            var button = this._groupsButton[domItem._groupsButtonIndex][domItem._buttonIndex];
             if (button) {
-                if ('callback' in button)
+                if (button.callback) {
                     button.callback.call(button.context);
+                }
+
                 this.fire('clicked', { idx: domItem._buttonIndex });
             }
         }

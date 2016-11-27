@@ -5,7 +5,6 @@
 .tool-bar-item {
     background: #fff;
     border-radius: 0px !important;
-    width: 36px !important;
     height: 36px !important;
 }
 
@@ -16,4 +15,8 @@
     color: #303030;
     margin: 0 !important;
     height: 700vh;
+}
+
+.leaflet-toolbar-group{
+
 }

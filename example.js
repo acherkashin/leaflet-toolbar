@@ -11,44 +11,48 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
 
 }).addTo(mymap);
 
-const btns = L.Toolbar([{
-    title: 'Показать/скрыть панель условных знаков',
-    classes: 'glyphicon glyphicon-map-marker',
-    callback: () => {
-        console.log('1');
-    }
-}, {
-    title: 'Включить/выключить режим показа информации о стране/регионе',
-    classes: 'glyphicon glyphicon-info-sign',
-    callback: () => {
-        console.log('2');
-    }
-}, {
-    title: 'Включить/выключить режим показа информации о стране/регионе',
+const zoomButtons = [{
+    title: 'Zoom out',
     classes: 'glyphicon glyphicon-zoom-out',
     callback: () => {
-        console.log('3');
+        console.log('zoom-out');
     }
 }, {
+    title: 'Zoom in',
     classes: 'glyphicon glyphicon-zoom-in',
-    title: 'Уменьшить масштаб',
     callback: () => {
-        console.log('4');
+        console.log('zoom-in');
     }
-}], {
-        position: 'topleft',
-        template: {
-            tag: 'button',
-            classes: 'btn btn-default tool-bar-item'
-        },
-        orientation: 'column', //column or row
-        toolbarTemplate: {
-            classes: 'leaflet-toolbar'
-        }
-        // panelTemplate: {
-        //     backgroundColor: 'white'
-        // }
-    });
+}];
+
+const groupButtons = [{
+    title: 'Example-1',
+    classes: 'glyphicon glyphicon-map-marker',
+    callback: () => {
+        console.log('map-marker');
+    }
+}, {
+    title: 'Example-2',
+    classes: 'glyphicon glyphicon-info-sign',
+    callback: () => {
+        console.log('glyphicon-info-sign');
+    }
+}];
+
+const btns = L.Toolbar([zoomButtons, groupButtons], {
+    position: 'topleft',
+    template: {
+        tag: 'button',
+        classes: 'btn btn-default tool-bar-item'
+    },
+    orientation: 'column', //column or row
+    toolbarTemplate: {
+        classes: 'leaflet-toolbar'
+    },
+    groupTemplate: {
+        classes: 'leaflet-toolbar-group'
+    }
+});
 
 btns.on('clicked', (data) => {
 
