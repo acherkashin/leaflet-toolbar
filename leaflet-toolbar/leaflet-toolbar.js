@@ -176,17 +176,6 @@ L.FunctionButtons = L.Control.extend({
     }
 });
 
-L.functionButtons = function (buttons, options) {
+L.Toolbar = function (buttons, options) {
     return new L.FunctionButtons(buttons, options);
-};
-
-/*
- * Helper method from the old class. It is not recommended to use it, please use L.functionButtons().
- */
-L.functionButton = function (content, button, options) {
-    if (button)
-        button.content = content;
-    else
-        button = { content: content };
-    return L.functionButtons([button], options);
 };

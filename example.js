@@ -11,7 +11,7 @@ L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=p
     
 }).addTo(mymap);
 
-const btns = L.functionButtons([{
+const btns = L.Toolbar([{
     title: 'Показать/скрыть панель условных знаков',
     classes: 'glyphicon glyphicon-map-marker'
 }, {
